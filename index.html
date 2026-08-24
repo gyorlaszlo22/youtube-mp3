@@ -14,6 +14,7 @@
         button { background: #4CAF50; color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; transition: background 0.2s; }
         button:hover { background: #43a047; }
         #status { margin-top: 20px; font-size: 14px; color: #81c784; line-height: 1.5; }
+        .download-btn { display: inline-block; margin-top: 15px; background: #2196F3; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; width: 100%; box-sizing: border-box; }
         .spinner { display: none; width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin: 15px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
@@ -42,14 +43,25 @@
             statusDiv.innerHTML = "";
             spinner.style.display = "block";
 
-            // Szimulált tiszta visszajelzés, amíg az APK-ba csomagolt WebView feldolgozza
+            // Videó ID kiszedése
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            const videoId = (match && match[2].length === 11) ? match[2] : null;
+
             setTimeout(() => {
                 spinner.style.display = "none";
-                statusDiv.innerHTML = `
-                    <b>A feldolgozás sikeres!</b><br>
-                    <span style="color: #aaa; font-size: 12px;">Ez a felület teljesen mentes a felugró reklámoktól.</span>
-                `;
-            }, 1500);
+                if(videoId) {
+                    // Közvetlen, tiszta gomb generálása a letöltéshez
+                    statusDiv.innerHTML = `
+                        <b>A konvertálás kész!</b><br>
+                        <a class="download-btn" href="https://dl.ssyoutubepp.com/watch?v=${videoId}" target="_blank">
+                            MP3 Fájl Mentése
+                        </a>
+                    `;
+                } else {
+                    statusDiv.innerHTML = "<span style='color: #ff5252;'>Hiba: Érvénytelen YouTube link!</span>";
+                }
+            }, 1000);
         }
     </script>
 </body>
