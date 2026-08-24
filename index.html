@@ -13,8 +13,8 @@
         input:focus { border-color: #ff3333; outline: none; }
         button { background: #ff0000; color: white; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; transition: background 0.2s; }
         button:hover { background: #cc0000; }
-        #status { margin-top: 20px; font-size: 15px; color: #4CAF50; font-weight: bold; }
-        .link-btn { display: inline-block; margin-top: 15px; background: #28a745; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; width: 100%; box-sizing: border-box; }
+        #status { margin-top: 20px; font-size: 14px; color: #4CAF50; font-weight: bold; }
+        iframe { width: 100%; height: 80px; border: none; margin-top: 15px; background: transparent; }
     </style>
 </head>
 <body>
@@ -23,32 +23,34 @@
         <p>Illeszd be a YouTube videó linkjét:</p>
         <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=...">
         <br>
-        <button onclick="convertVideo()">Letöltés Előkészítése</button>
-        <div id="status"></div>
+        <button onclick="generatePlayer()">MP3 Konvertálás</button>
+        <div id="playerContainer"></div>
     </div>
 
     <script>
-        function convertVideo() {
+        function generatePlayer() {
             const url = document.getElementById('urlInput').value.trim();
-            const status = document.getElementById('status');
+            const container = document.getElementById('playerContainer');
             
             if(!url) {
                 alert('Kérlek írj be egy érvényes YouTube linket!');
                 return;
             }
 
-            status.innerHTML = "<p style='color: #ffa500;'>Link előkészítése...</p>";
+            // Videó ID kiszedése
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            const videoId = (match && match[2].length === 11) ? match[2] : null;
 
-            setTimeout(() => {
-                // Stabilabb, működő konvertáló partner link
-                const encodedUrl = encodeURIComponent(url);
-                status.innerHTML = `
-                    <p style="color: #4CAF50;">Kész a konvertálás!</p>
-                    <a class="link-btn" href="https://loader.to/api/button/?url=${encodedUrl}&f=mp3" target="_blank">
-                        MP3 Fájl Letöltése
-                    </a>
+            if(videoId) {
+                // Beágyazott, tiszta konvertáló keret, ami elkerüli a direkt pop-up reklámokat
+                container.innerHTML = `
+                    <p style="color: #4CAF50; margin-top: 15px;">Kattints a letöltéshez:</p>
+                    <iframe src="https://www.mp3-youtube.download/hu/embed?v=${videoId}" scrolling="no"></iframe>
                 `;
-            }, 800);
+            } else {
+                alert('Hibás YouTube link!');
+            }
         }
     </script>
 </body>
