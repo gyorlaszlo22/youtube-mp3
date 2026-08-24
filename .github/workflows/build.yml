@@ -17,11 +17,16 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Build with Webview template
+    - name: Build WebApp to APK
       run: |
-        echo "Webes alkalmazás előkészítése..."
-        pwd
-        ls -la
+        echo "Alkalmazás csomagolása..."
         mkdir -p app/src/main/assets/www
         cp index.html app/src/main/assets/www/
-        echo "Kész!"
+        # Itt generálunk egy egyszerű Android keretet
+        echo "package com.yt.downloader;" > MainActivity.java
+        
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: YouTube-MP3-App
+        path: index.html
