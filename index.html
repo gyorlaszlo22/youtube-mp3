@@ -14,6 +14,7 @@
         button { background: #ff0000; color: white; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; transition: background 0.2s; }
         button:hover { background: #cc0000; }
         #status { margin-top: 20px; font-size: 15px; color: #4CAF50; font-weight: bold; }
+        .link-btn { display: inline-block; margin-top: 15px; background: #28a745; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; width: 100%; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -22,12 +23,12 @@
         <p>Illeszd be a YouTube videó linkjét:</p>
         <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=...">
         <br>
-        <button onclick="downloadMp3()">Letöltés Indítása</button>
-        <p id="status"></p>
+        <button onclick="convertVideo()">Letöltés Előkészítése</button>
+        <div id="status"></div>
     </div>
 
     <script>
-        function downloadMp3() {
+        function convertVideo() {
             const url = document.getElementById('urlInput').value.trim();
             const status = document.getElementById('status');
             
@@ -36,25 +37,18 @@
                 return;
             }
 
-            status.innerText = "Zene feldolgozása...";
+            status.innerHTML = "<p style='color: #ffa500;'>Link előkészítése...</p>";
 
-            // Biztonságosabb, reklámmentes konvertáló partnerhivatkozás
             setTimeout(() => {
-                const videoId = extractVideoID(url);
-                if (videoId) {
-                    // Közvetlen letöltési / konvertáló link felépítése reklámok nélkül
-                    const cleanUrl = `https://youtube-mp3.nuapi.link/watch?v=${videoId}`;
-                    status.innerHTML = `A zene kész! <br><a href="https://www.y2mate.is/s11/youtube-to-mp3?url=${encodeURIComponent(url)}" target="_blank" style="color: #4CAF50; text-decoration: underline;">Kattints ide a mentéshez</a>`;
-                } else {
-                    status.innerText = "Hiba: Érvénytelen YouTube link!";
-                }
-            }, 1000);
-        }
-
-        function extractVideoID(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+                // Stabilabb, működő konvertáló partner link
+                const encodedUrl = encodeURIComponent(url);
+                status.innerHTML = `
+                    <p style="color: #4CAF50;">Kész a konvertálás!</p>
+                    <a class="link-btn" href="https://loader.to/api/button/?url=${encodedUrl}&f=mp3" target="_blank">
+                        MP3 Fájl Letöltése
+                    </a>
+                `;
+            }, 800);
         }
     </script>
 </body>
