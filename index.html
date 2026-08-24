@@ -13,36 +13,44 @@
         input:focus { border-color: #ff3333; outline: none; }
         button { background: #ff0000; color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; transition: background 0.2s; }
         button:hover { background: #cc0000; }
-        #status { margin-top: 20px; font-size: 14px; color: #4CAF50; line-height: 1.5; }
+        #status { margin-top: 20px; }
+        .download-btn { display: block; margin-top: 15px; background: #4CAF50; color: white; padding: 14px; text-decoration: none; border-radius: 10px; font-weight: bold; box-sizing: border-box; text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>YouTube MP3</h2>
-        <p>Reklámmentes zenelejátszó és feldolgozó</p>
-        <input type="text" id="urlInput" placeholder="Illeszd be a YouTube linket...">
-        <button onclick="processLink()">Feldolgozás</button>
+        <p>Illeszd be a linket a letöltéshez</p>
+        <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=...">
+        <button onclick="generateDownload()">Letöltés Generálása</button>
         <div id="status"></div>
     </div>
 
     <script>
-        function processLink() {
+        function generateDownload() {
             const url = document.getElementById('urlInput').value.trim();
             const statusDiv = document.getElementById('status');
             
             if(!url) {
-                alert('Kérlek adj meg egy linket!');
+                alert('Kérlek adj meg egy YouTube linket!');
                 return;
             }
 
-            statusDiv.innerHTML = "<span style='color: #ffa500;'>Videó elemzése...</span>";
+            // Videó ID kiszedése
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            const videoId = (match && match[2].length === 11) ? match[2] : null;
 
-            setTimeout(() => {
+            if(videoId) {
+                // Tiszta, közvetlen konvertáló hivatkozás
                 statusDiv.innerHTML = `
-                    <b>Sikeres feldolgozás!</b><br>
-                    <span style="color: #aaa; font-size: 12px;">Ez az alkalmazás blokkolja a felugró ablakokat és a reklámokat.</span>
+                    <a class="download-btn" href="https://www.y2mate.is/s11/youtube-to-mp3?url=https://www.youtube.com/watch?v=${videoId}" target="_blank">
+                        Kattints ide az MP3 letöltéséhez
+                    </a>
                 `;
-            }, 1000);
+            } else {
+                statusDiv.innerHTML = "<p style='color: #ff5252; font-size: 13px;'>Érvénytelen YouTube link!</p>";
+            }
         }
     </script>
 </body>
