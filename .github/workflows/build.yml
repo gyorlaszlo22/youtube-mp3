@@ -20,6 +20,8 @@ jobs:
     - name: Build with Webview template
       run: |
         echo "Webes alkalmazás előkészítése..."
+        pwd
+        ls -la
         mkdir -p app/src/main/assets/www
         cp index.html app/src/main/assets/www/
         echo "Kész!"
